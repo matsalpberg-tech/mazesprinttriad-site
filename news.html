@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Maze Sprint Triad — News</title>
+  <meta name="robots" content="index,follow" />
+  <meta name="description" content="News and updates from Maze Sprint Triad — the next generation of orienteering and arena sport." />
+  <style>
+    :root {
+      --bg: #ffffff;
+      --bg2: #f5f5f7;
+      --text: #111111;
+      --muted: #555555;
+      --accent: #ff6800;
+      --border: #e0e0ea;
+      --maxw: 1100px;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: radial-gradient(1400px 700px at 80% 0%, var(--bg2), var(--bg));
+      color: var(--text);
+    }
+    .container {
+      max-width: var(--maxw);
+      margin: 0 auto;
+      padding: 28px 20px 64px;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .logo img {
+      height: 48px;
+      display: block;
+    }
+    .logo-title {
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-size: 14px;
+    }
+    nav a {
+      font-size: 14px;
+      text-decoration: none;
+      color: var(--muted);
+      margin-left: 16px;
+    }
+    nav a.primary {
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: var(--accent);
+      font-weight: 600;
+    }
+    h1 {
+      font-size: clamp(28px, 4vw, 36px);
+      margin: 0 0 8px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .subtitle {
+      color: var(--muted);
+      margin-bottom: 24px;
+      font-size: 14px;
+    }
+    .card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px 24px 10px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+    }
+    .news-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .news-item {
+      border-bottom: 1px solid var(--border);
+      padding: 18px 0;
+    }
+    .news-item:last-child {
+      border-bottom: none;
+    }
+    .news-title {
+      margin: 0 0 4px;
+      font-size: 18px;
+    }
+    .news-meta {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .news-summary {
+      font-size: 14px;
+      margin: 0 0 8px;
+    }
+    .news-link {
+      font-size: 13px;
+      text-decoration: none;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .empty {
+      color: var(--muted);
+      font-size: 14px;
+    }
+    footer {
+      margin-top: 32px;
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <img src="assets/logo.png" alt="Maze Sprint Triad logo" />
+        <div>
+          <div class="logo-title">MAZE SPRINT TRIAD</div>
+          <div style="font-size:12px;color:var(--muted);">Fast · Smart · Spectacular</div>
+        </div>
+      </div>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/news" class="primary">News</a>
+      </nav>
+    </header>
+
+    <main>
+      <div class="card">
+        <h1>News &amp; Updates</h1>
+        <p class="subtitle">Latest developments, pilots and milestones on the road from forest to arena.</p>
+        <ul class="news-list" id="news-list">
+          <li class="empty">Loading news…</li>
+        </ul>
+      </div>
+
+      <footer>
+        <div>© Maze Sprint Triad 2025 · All rights reserved.</div>
+        <div>
+          <a href="mailto:info@mazesprinttriad.com">Contact</a>
+        </div>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    fetch('content/news.json', { cache: 'no-store' })
+      .then(r => r.json())
+      .then(data => {
+        const list = document.getElementById('news-list');
+        list.innerHTML = '';
+
+        const items = (data && data.items) ? data.items : [];
+
+        if (!items.length) {
+          list.innerHTML = '<li class="empty">No news published yet. Check back soon.</li>';
+          return;
+        }
+
+        items
+          .slice()  // copy
+          .sort((a, b) => (b.date || '').localeCompare(a.date || ''))
+          .forEach(item => {
+            const li = document.createElement('li');
+            li.className = 'news-item';
+
+            const title = document.createElement('h2');
+            title.className = 'news-title';
+            title.textContent = item.title || 'Untitled';
+
+            const meta = document.createElement('div');
+            meta.className = 'news-meta';
+            meta.textContent = item.date ? new Date(item.date).toLocaleDateString() : '';
+
+            const summary = document.createElement('p');
+            summary.className = 'news-summary';
+            summary.textContent = item.summary || '';
+
+            li.appendChild(title);
+            if (meta.textContent) li.appendChild(meta);
+            if (summary.textContent) li.appendChild(summary);
+
+            if (item.link) {
+              const a = document.createElement('a');
+              a.className = 'news-link';
+              a.href = item.link;
+              a.target = '_blank';
+              a.rel = 'noopener noreferrer';
+              a.textContent = 'Read more →';
+              li.appendChild(a);
+            }
+
+            list.appendChild(li);
+          });
+      })
+      .catch(() => {
+        const list = document.getElementById('news-list');
+        list.innerHTML = '<li class="empty">Could not load news right now.</li>';
+      });
+  </script>
+</body>
+</html>
