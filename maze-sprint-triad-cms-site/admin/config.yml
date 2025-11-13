@@ -1,0 +1,24 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "assets"
+public_folder: "/assets"
+
+publish_mode: simple
+
+collections:
+  - name: "content"
+    label: "Site Content"
+    files:
+      - file: "content/home.json"
+        label: "Homepage"
+        name: "home"
+        fields:
+          - { label: "Title", name: "title", widget: "string" }
+          - { label: "Headline", name: "headline", widget: "string" }
+          - { label: "Body", name: "body", widget: "text" }
+          - { label: "Tagline", name: "tagline", widget: "string" }
+          - { label: "Launch Year", name: "launch_year", widget: "string" }
+          - { label: "Instagram Handle", name: "instagram", widget: "string" }
+          - { label: "Contact Email", name: "email", widget: "string" }
