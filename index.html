@@ -50,49 +50,36 @@
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <div class="logo">
-        <img src="assets/logo.png" alt="Maze Sprint Triad logo" />
-      </div>
-      <span class="badge">Fast • Smart • Spectacular</span>
-    </header>
-
-    <main class="hero">
-      <div class="card">
-        <h1 id="title">MAZE SPRINT TRIAD</h1>
-        <p class="sub"><strong id="headline">FROM FOREST TO ARENA — THE NEXT GENERATION OF SPORT</strong></p>
-        <div class="divider"></div>
-        <p class="sub" id="body">Loading…</p>
-        <p class="tagline" id="tagline">FAST. SMART. SPECTACULAR.</p>
-      </div>
-
-      <footer>
-        <div class="row">
-          <div class="soon" id="launch">Official launch 2026 — Follow us on <span class="handle" id="instagram">@MazeSprintTriad</span></div>
-          <div>© Maze Sprint Triad 2025 · All rights reserved. · <a id="email" href="mailto:info@mazesprinttriad.com">info@mazesprinttriad.com</a></div>
-        </div>
-      </footer>
-    </main>
-  </div>
+  <!-- Netlify Identity widget -->
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <!-- Decap (Netlify) CMS -->
+  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 
   <script>
-    fetch('content/home.json', { cache: 'no-store' })
-      .then(r => r.json())
-      .then(data => {
-        document.getElementById('title').textContent = data.title || 'MAZE SPRINT TRIAD';
-        document.getElementById('headline').textContent = data.headline || '';
-        document.getElementById('body').textContent = data.body || '';
-        document.getElementById('tagline').textContent = data.tagline || '';
-        document.getElementById('launch').innerHTML = `Official launch ${data.launch_year || '2026'} — Follow us on <span class="handle" id="instagram">${data.instagram || '@MazeSprintTriad'}</span>`;
-        const email = data.email || 'info@mazesprinttriad.com';
-        const emailEl = document.getElementById('email');
-        emailEl.textContent = email;
-        emailEl.href = 'mailto:' + email;
-      })
-      .catch(() => {
-        document.getElementById('body').textContent = "Born from years of international orienteering experience and creative innovation, Maze Sprint Triad redefines what a race can be.";
+    // Öppna login automatiskt om man går till /admin
+    if (window.netlifyIdentity) {
+      // Fånga ev. invite_token i URL:en (kommer i fragmentet #invite_token=...)
+      const hash = window.location.hash || "";
+      const m = hash.match(/invite_token=([^&]+)/);
+      if (m && m[1]) {
+        // Bearbeta invite -> triggar "set password"-flödet
+        window.netlifyIdentity.acceptInvite(m[1], true)
+          .catch(() => {
+            // Om något strular: öppna loginpanelen
+            window.netlifyIdentity.open();
+          });
+      } else {
+        // Ingen token: visa login-panel om inte redan inloggad
+        window.netlifyIdentity.on("init", (user) => {
+          if (!user) window.netlifyIdentity.open();
+        });
+      }
+
+      // När man loggar in första gången – ladda om admin
+      window.netlifyIdentity.on("login", () => {
+        document.location.href = "/admin/";
       });
+    }
   </script>
 </body>
 </html>
